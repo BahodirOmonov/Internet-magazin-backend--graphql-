@@ -1,8 +1,38 @@
+input Pagination {
+	page: Int = 1
+	limit: Int = 5
+}
+
 type Query {
-	categories: [Category!]!
+	categories(
+		pagination: Pagination = {}
+		categoryId: ID
+		search: String 
+	): [Category!]!
+}
+
+type Mutation {
+	addCategory (
+		categoryName: String!
+	) : ResponseData!
+
+	changeCategory (
+		categoryId: ID!
+		categoryName: String!
+	) : ResponseData!
+
+	deleteCategory (
+		categoryId: ID!
+	) : ResponseData!
 }
 
 type Category {
 	categoryId: ID!
 	categoryName: String!
+}
+
+type ResponseData {
+	status: Int!
+	message: String!
+	data: Category
 }

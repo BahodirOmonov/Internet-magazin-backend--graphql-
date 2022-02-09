@@ -12,7 +12,13 @@ const pool = new pg.Pool({
 export default async function fetch(query, ...params) {
 	const client = await pool.connect()
 
-	const { rows } = await client.query(query, params.length ? params : null)
+	try {
+		const { rows } = await client.query(query, params.length ? params : null)
 
-	return rows
+		return rows
+	} catch(error) {
+		return error
+	} finally {
+		client.release()
+	}
 }
