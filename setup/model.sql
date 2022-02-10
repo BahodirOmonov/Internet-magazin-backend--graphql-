@@ -1,10 +1,13 @@
 CREATE DATABASE online_shop;
 
+
+DROP TABLE IF EXISTS categories CASCADE;
 CREATE TABLE categories (
 	category_id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	category_name CHARACTER VARYING(50) NOT NULL UNIQUE
 );
 
+DROP TABLE IF EXISTS products CASCADE;
 CREATE TABLE products (
 	product_id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	product_name CHARACTER VARYING(50) NOT NULL UNIQUE,
@@ -15,22 +18,25 @@ CREATE TABLE products (
 	category_id SMALLINT NOT NULL REFERENCES categories(category_id)
 );
 
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
 	user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	username CHARACTER VARYING(50) NOT NULL,
 	password CHARACTER VARYING(100) NOT NULL,
 	contact CHARACTER VARYING(12) NOT NULL CHECK (contact ~* '^9989[012345789][0-9]{7}$') UNIQUE, 
 	email CHARACTER VARYING(50) NOT NULL CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$') UNIQUE,
-	role CHARACTER VARYING(10) NOT NULL CHECK (role in ('admin', 'user'))
+	role CHARACTER VARYING(10) NOT NULL DEFAULT 'user' CHECK (role in ('admin', 'user'))
 );
 
+DROP TABLE IF EXISTS orders CASCADE;
 CREATE TABLE orders (
 	order_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	user_id, is_paid, order_created_at INT NOT NULL REFERENCES users(user_id),
-	user_id, is_paid, order_created_at BOOLEAN NOT NULL,
-	user_id, is_paid, order_created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
+	user_id INT NOT NULL REFERENCES users(user_id),
+	is_paid BOOLEAN NOT NULL,
+	order_created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
+DROP TABLE IF EXISTS order_products CASCADE;
 CREATE TABLE order_products (
 	order_product_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	order_id INT NOT NULL REFERENCES orders(order_id),
@@ -79,7 +85,6 @@ INSERT INTO products (category_id, product_name, price, short_desc, long_desc, i
 );
 
 
-CREATE EXTENSION pgcrypto;
 
 INSERT INTO users(username, password, contact, email, role) VALUES
 ('admin', crypt('admin', gen_salt('bf')), '998911240616', 'admin@gmail.com', 'admin'),
@@ -97,7 +102,7 @@ INSERT INTO orders (user_id, is_paid, order_created_at) VALUES
 INSERT INTO order_products(order_id, product_id) VALUES 
 (1, 2), 
 (1, 3), 
-(2, 5), 
+(2, 4), 
 (2, 1), 
 (3, 4), 
 (3, 1), 
