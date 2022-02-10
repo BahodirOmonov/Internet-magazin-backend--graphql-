@@ -1,0 +1,56 @@
+input Pagination {
+	page: Int = 1
+	limit: Int = 5
+}
+
+scalar Upload
+
+type Query {
+	products(
+		pagination: Pagination = {}
+		productId: ID
+		search: String 
+	): [Product!]! 
+}
+
+type Mutation {
+	addProduct (
+		categoryId: ID! 
+		productName: String!
+		price: Int!
+		shortDesc: String! 
+		longDesc: String! 
+		file: Upload!
+	) : ResponseProduct!
+
+	changeProduct (
+		productId: ID!
+		categoryId: ID 
+		productName: String
+		price: Int 
+		shortDesc: String 
+		longDesc: String 
+		file: Upload
+	) : ResponseProduct!
+
+	deleteProduct (
+		productId: ID!
+	) : ResponseProduct!
+
+}
+
+type Product {
+	productId: ID!
+	productName: String!
+	price: Int!
+	shortDesc: String!
+	longDesc: String!
+	imagePath: String!
+	categoryId: ID!
+}
+
+type ResponseProduct {
+	status: Int!
+	message: String!
+	data: Product
+}

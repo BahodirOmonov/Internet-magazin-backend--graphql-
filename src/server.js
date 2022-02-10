@@ -5,6 +5,7 @@ import {
 } from 'apollo-server-core'
 import express from 'express'
 import http from 'http'
+import { graphqlUploadExpress } from 'graphql-upload'
 import { PORT } from '../config.js'
 
 import { schema } from './modules/index.js' 
@@ -19,6 +20,8 @@ import { schema } from './modules/index.js'
             ApolloServerPluginLandingPageGraphQLPlayground()
         ],
     })
+
+    app.use(graphqlUploadExpress())
 
     await server.start()
     server.applyMiddleware({ app })
