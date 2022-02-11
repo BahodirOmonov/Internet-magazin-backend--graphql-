@@ -9,12 +9,15 @@ import { graphqlUploadExpress } from 'graphql-upload'
 import { PORT } from '../config.js'
 
 import { schema } from './modules/index.js' 
+import context from './context/context.js' 
 
 ;(async function startApolloServer() {
     const app = express()
     const httpServer = http.createServer(app)
     const server = new ApolloServer({
+        context,
         schema,
+        introspection: true,
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
             ApolloServerPluginLandingPageGraphQLPlayground()

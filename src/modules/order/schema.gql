@@ -1,0 +1,50 @@
+input Pagination {
+	page: Int = 1
+	limit: Int = 5
+}
+
+type Query {
+	orders(
+		pagination: Pagination = {}
+		orderId: ID
+		isPaid: Boolean
+	): [Order!]!
+}
+
+type Mutation {
+	addOrder (
+		productId: ID!
+	) : ResponseOrder!
+
+# 	changeCategory (
+# 		categoryId: ID!
+# 		categoryName: String!
+# 	) : ResponseData!
+
+# 	deleteCategory (
+# 		categoryId: ID!
+# 	) : ResponseData!
+} 
+
+type Order {
+	orderId: ID!
+	user: User!
+	products: [Product!]
+	isPaid: Boolean!
+	orderCreatedAt: Date!
+	totalPrice: Int!
+}
+
+type OrderProduct {
+	orderProductId: ID!
+	orderId: ID!
+	productId: ID!
+}
+
+scalar Date
+
+type ResponseOrder {
+	status: Int!
+	message: String!
+	data: OrderProduct
+}

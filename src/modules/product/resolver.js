@@ -13,8 +13,10 @@ export default {
 	},
 
 	Mutation: {
-		addProduct: async (_, { categoryId, productName, price, shortDesc, longDesc, file, imagePath }) => {
+		addProduct: async (_, { categoryId, productName, price, shortDesc, longDesc, file, imagePath }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz addProduct so'rov yubora olmaysiz!")
+
 				const { createReadStream, filename, mimetype, encoding } = await file
 				const stream = createReadStream()
 				const fileName = Date.now() + filename.replace(/\s/g, "")
@@ -44,8 +46,10 @@ export default {
 			}
 		},
 
-		changeProduct: async (_, { productId, categoryId, productName, price, shortDesc, longDesc, file, imagePath }) => {
+		changeProduct: async (_, { productId, categoryId, productName, price, shortDesc, longDesc, file, imagePath }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz changeProduct so'rov yubora olmaysiz!")
+
 				let fileName = ""
 				if(file) {
 					const { createReadStream, filename, mimetype, encoding } = await file
@@ -81,8 +85,10 @@ export default {
 
 
 
-		deleteProduct: async (_, { productId }) => {
+		deleteProduct: async (_, { productId }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz deleteProduct so'rov yubora olmaysiz!")
+
 				const deleteProduct = await model.deleteProduct(productId)
 				
 				if(deleteProduct.message) throw new Error(deleteProduct.message) 
@@ -101,6 +107,7 @@ export default {
 				}
 			}
 		}, 
+		
 	},
 
 	Product: {
@@ -112,3 +119,8 @@ export default {
 		categoryId: parent => parent.category_id
 	}
 }
+
+
+// "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY0NDU4MDAzMiwiZXhwIjoxNjQ0NjY2NDMyfQ.TFTG4KT8HaOCIHMUvLKxaVNfgsfZBR3ScFJvEqcBclQ"
+
+// "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ0NTgwMzUwLCJleHAiOjE2NDQ2NjY3NTB9.wGtiscy-QwFwE55uxY3EejiR_TIbjptXMI6ynnB0_aA"

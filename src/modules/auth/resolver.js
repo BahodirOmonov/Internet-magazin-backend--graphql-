@@ -12,7 +12,7 @@ export default {
 				return {
 					status: 201,
 					message: "User muvaffaqiyatli topildi!",
-					token: jwt.sign({ userId: logUser.userId }, 'SECRET_KEY'),
+					token: jwt.sign({ userId: logUser.user_id, role: logUser.role }, 'SECRET_KEY', {expiresIn: 86400}),
 					data: logUser
 				}
 			} catch(error) {

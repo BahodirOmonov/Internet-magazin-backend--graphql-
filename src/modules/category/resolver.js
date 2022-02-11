@@ -6,8 +6,10 @@ export default {
 	},
 
 	Mutation: {
-		addCategory: async (_, { categoryName }) => {
+		addCategory: async (_, { categoryName }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz addCategoryga so'rov yubora olmaysiz!")
+
 				const newCategory = await model.addCategory(categoryName)
 
 				if(newCategory.message) throw new Error(newCategory.message) 
@@ -26,8 +28,10 @@ export default {
 			}
 		},
 
-		changeCategory: async (_, { categoryId, categoryName }) => {
+		changeCategory: async (_, { categoryId, categoryName }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz changeCategoryga so'rov yubora olmaysiz!")
+
 				const changeCategory = await model.changeCategory(categoryId, categoryName)
 
 				if(changeCategory.message) throw new Error(changeCategory.message) 
@@ -46,8 +50,10 @@ export default {
 			}
 		},
 
-		deleteCategory: async (_, { categoryId }) => {
+		deleteCategory: async (_, { categoryId }, context) => {
 			try {
+				if(!context.userId || context.role != 'admin') throw new Error("Sizda adminlik huquqi yo'q. Siz deleteCategoryga so'rov yubora olmaysiz!")
+
 				const deleteCategory = await model.deleteCategory(categoryId)
 				
 				if(!deleteCategory[0]) throw new Error("Category topilmadi!") 

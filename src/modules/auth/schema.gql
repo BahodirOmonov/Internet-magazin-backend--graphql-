@@ -22,7 +22,7 @@ type Response {
 }
 
 type User {
-	user_id: ID!
+	userId: ID!
 	username: String!
 	contact: String!
 	email: String!
